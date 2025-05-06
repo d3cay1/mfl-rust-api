@@ -1,0 +1,43 @@
+# mfl_manager_lib/Cargo.toml
+
+[package]
+name = "mfl_manager_lib"
+version = "0.1.0"       # Should match the workspace version / mfl_manager version
+edition = "2021"        # Or your preferred edition
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+# --- Web Framework types used in handlers, models, middleware ---
+actix-web = { version = "4", features = ["macros"] }
+
+# --- Async utilities (used in middleware example) ---
+futures-util = "0.3.31"
+
+# --- HTTP Client & related (for mfl_api.rs) ---
+# Remember the recommendation to switch mfl_api to async OR use web::block in handlers.
+reqwest = { version = "0.12.14", features = ["json", "cookies"] }
+regex = "1.11.1"
+urlencoding = "2.1"
+
+# --- Serialization (used in models, mfl_api) ---
+serde = { version = "1.0.219", features = ["derive"] }
+serde_json = "1.0.140"
+
+# --- Error Handling (used in errors.rs, mfl_api.rs) ---
+# Assuming errors.rs uses derive_more::Display + thiserror::Error based on last fix
+derive_more = "2.0.1"   # For Display derive
+thiserror = "1.0.12"  # For Error derive (used in MflError, maybe ServiceError)
+
+# --- State / Session IDs ---
+uuid = { version = "1.16.0", features = ["v4"] }
+
+# --- Logging Facade (if library components log messages) ---
+log = "0.4"
+once_cell = "1.21.0"
+
+# --- Dependencies usually only needed by the binary (main.rs) ---
+# tokio = { version = "1", features = ["full"] } # Typically only in main.rs unless lib uses async directly
+# dotenv = "0.15"                               # Typically only in main.rs
+# env_logger = "0.11.7"                         # Typically only in main.rs
+# blocking = "1.6.1"                            # Likely transitive via reqwest blocking feature, probably not needed explicitly

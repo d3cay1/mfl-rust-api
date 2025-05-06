@@ -1,0 +1,21 @@
+# mfl_manager/Cargo.toml
+[package]
+name = "mfl_manager"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+# Depend on the library containing the core logic
+mfl_manager_lib = { path = "../mfl_manager_lib" } # Adjust path if needed
+
+# Dependencies specifically for main.rs/running the server
+# In mfl_manager/Cargo.toml AND mfl_manager_lib/Cargo.toml
+actix-web = { version = "4", features = ["macros"] }
+tokio = { version = "1", features = ["full"] }
+# Keep dotenv/env_logger if used only in main.rs for setup
+dotenv = "0.15"
+env_logger = "0.11.7"
+log = "0.4"
+
+# Dependencies like reqwest, serde, regex, etc., should be moved
+# to mfl_manager_lib/Cargo.toml if only used by the library code.

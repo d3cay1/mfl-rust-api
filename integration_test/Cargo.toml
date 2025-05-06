@@ -1,0 +1,20 @@
+# integration_test/Cargo.toml
+[package]
+name = "integration_test"
+version = "0.1.0"
+edition = "2021" # Match your chosen edition
+publish = false
+
+[dependencies]
+# Depend on the LIBRARY crate now
+mfl_manager_lib = { path = "../mfl_manager_lib" } # Adjust path
+
+# Test dependencies
+actix-web = { version = "4", features = ["macros"] }
+serde = { version = "1.0", features = ["derive"] }   # If needed for test setup/assertions
+serde_json = "1.0"
+tokio = { version = "1", features = ["macros", "rt-multi-thread"] } # For #[actix_web::test]
+uuid = { version = "1", features = ["v4"] }
+mime = "0.3.17"
+chrono = "0.4.41" # Example if tests need it
+# Add other deps like mockall if using
