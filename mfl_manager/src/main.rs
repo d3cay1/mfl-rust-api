@@ -16,7 +16,12 @@ async fn main() -> std::io::Result<()> {
     let session_store: app_state::SessionStore = Arc::new(Mutex::new(HashMap::<String, handler_models::SessionData>::new()));
     // Setup logger, dotenv etc.
 
-    println!("Starting server at http://127.0.0.1:8080");
+    // Define host and port variables
+    let host = "0.0.0.0";
+    let port = 8080;
+    let server_addr = format!("{}:{}", host, port);
+
+    println!("Starting server at http://{}", server_addr); // Log the server address
     HttpServer::new(move || {
         App::new()
             .app_data(web::Data::new(session_store.clone()))
@@ -27,7 +32,7 @@ async fn main() -> std::io::Result<()> {
             .service(web::resource("/health").route(web::get().to(handlers::health_check)))
         // ... other services
     })
-        .bind(("127.0.0.1", 8080))?
+        .bind((host, port))?
         .run()
         .await
 }
