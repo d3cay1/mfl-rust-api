@@ -1,6 +1,6 @@
 // src/handlers.rs
 use actix_web::{get, post, web, HttpMessage, HttpRequest, HttpResponse, Responder, Result};
-use crate::handler_models::{LoginRequest, LoginResponse, PlayerResponse, SessionData};
+use crate::handler_models::{LoginRequest, LoginResponse, SessionData};
 use crate::app_state::SessionStore;
 
 #[post("/login")]
@@ -52,7 +52,8 @@ pub async fn get_free_agents_handler(
         ServiceError::Unauthorized("Unauthorized: Session data missing or invalid".to_string())
     })?.clone();
     let position_str = position.into_inner();
-
+    log::info!("get_free_agents_handler position:{}", position_str);
+    
     let free_agents = session_data.mfl_api.get_free_agents(
         &session_data.league_id,
         //&session_data.league_host,

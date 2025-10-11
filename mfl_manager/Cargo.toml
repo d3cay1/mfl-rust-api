@@ -11,6 +11,8 @@ mfl_manager_lib = { path = "../mfl_manager_lib" } # Adjust path if needed
 # Dependencies specifically for main.rs/running the server
 # In mfl_manager/Cargo.toml AND mfl_manager_lib/Cargo.toml
 actix-web = { version = "4", features = ["macros"] }
+actix-cors = "0.7.1" # Add actix-cors for CORS handling
+
 tokio = { version = "1", features = ["full"] }
 # Keep dotenv/env_logger if used only in main.rs for setup
 dotenv = "0.15"

@@ -137,7 +137,7 @@ impl MflApi {
                                 encode(username),
                                 encode(password)); // Ensure proper encoding
 
-        println!("Making request to get cookie: {}", login_url);
+        log::info!("Making request to get cookie: {}", login_url);
         let login_response = self.client.get(&login_url)
             // Add any necessary headers
             .send()
@@ -165,7 +165,7 @@ impl MflApi {
         match cookie_value {
             Some(cookie) => {
                 self.mfl_user_id_cookie = Some(cookie);
-                println!("Got cookie {}", self.mfl_user_id_cookie.as_ref().unwrap());
+                log::info!("Got cookie {}", self.mfl_user_id_cookie.as_ref().unwrap());
                 log::info!("Successfully extracted MFL_USER_ID cookie."); // Optional logging
                 Ok(())
             }
@@ -224,7 +224,7 @@ impl MflApi {
         let url = format!("{}/{}/export", MFL_API_URL.to_string(), self.year);
         let args = format!("TYPE=league&L={}&JSON=1", league_id);
         let req_url = format!("{}?{}", url, args);
-        println!("Making request to get league info {}", req_url);
+        log::info!("Making request to get league info {}", req_url);
         let resp = self.send_request(&req_url).await?;
         Ok(resp.text().await?)
     }
@@ -242,14 +242,14 @@ impl MflApi {
         };
 
         let req_url = format!("{}{}", url, args);
-        println!("Making request to get free agents {}", req_url);
+        log::info!("Making request to get free agents {}", req_url);
         let resp = self.send_request(&req_url).await?; // Get the Response from the Result
 
         let status = resp.status(); // *** Get status code ***
         let resp_body = resp.text().await.map_err(|e| RequestFailed(format!("Failed to read free agents response body: {}", e)))?; // *** Read body text ***
 
         if !status.is_success() { // *** Check status code ***
-            eprintln!("MFL API error fetching free agents. Status: {}, Body: {}", status, resp_body);
+            log::info!("MFL API error fetching free agents. Status: {}, Body: {}", status, resp_body);
             return Err(ApiStatusError { status, body: resp_body });
         }
 
@@ -257,7 +257,7 @@ impl MflApi {
         let response: FreeAgentResponse = serde_json::from_str(&resp_body)
             .map_err(|e| {
                 // Add context if JSON parsing fails even on success status
-                eprintln!("Failed to parse successful MFL free agents response. Status: {}, Body: {}, Error: {}", status, resp_body, e);
+                log::info!("Failed to parse successful MFL free agents response. Status: {}, Body: {}, Error: {}", status, resp_body, e);
                 MflError::JsonParse(e)
             })?;
 
@@ -274,14 +274,14 @@ impl MflApi {
         let args = format!("&L={}&PLAYERS={}&JSON=1", league_id, player_ids);
 
         let req_url = format!("{}{}", url, args);
-        println!("Making request to get player info {}", req_url);
+        log::info!("Making request to get player info {}", req_url);
         let resp = self.send_request(&req_url).await?; // Get the Response from the Result
 
         let status = resp.status(); // *** Get status code ***
         let resp_body = resp.text().await.map_err(|e| RequestFailed(format!("Failed to read players response body: {}", e)))?; // *** Read body text ***
 
         if !status.is_success() { // *** Check status code ***
-            eprintln!("MFL API error fetching players. Status: {}, Body: {}", status, resp_body);
+            log::info!("MFL API error fetching players. Status: {}, Body: {}", status, resp_body);
             return Err(ApiStatusError { status, body: resp_body });
         }
 
@@ -289,7 +289,7 @@ impl MflApi {
         let response: PlayersStatusResponse = serde_json::from_str(&resp_body)
             .map_err(|e| {
                 // Add context if JSON parsing fails even on success status
-                eprintln!("Failed to parse successful MFL players response. Status: {}, Body: {}, Error: {}", status, resp_body, e);
+                log::info!("Failed to parse successful MFL players response. Status: {}, Body: {}, Error: {}", status, resp_body, e);
                 MflError::JsonParse(e)
             })?;
 
