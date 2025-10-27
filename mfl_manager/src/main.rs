@@ -38,11 +38,17 @@ async fn main() -> std::io::Result<()> {
                     .allowed_headers(vec!["Authorization", "Content-Type"])
                     .max_age(3600),                 // Cache OPTIONS responses for 1 hour
             )
-            .wrap(handler_middleware::AuthMiddleware) // From lib
-            // Reference handlers from the lib crate
+            // Register public services first
             .service(handlers::login_handler)
-            .service(handlers::get_free_agents_handler)
             .service(web::resource("/health").route(web::get().to(handlers::health_check)))
+
+            // Now, create a new scope for services that require authentication
+            .service(
+                web::scope("") // Using an empty scope to keep original paths
+                    .wrap(handler_middleware::AuthMiddleware)
+                    .service(handlers::get_free_agents_handler)
+                    // Add other protected services here in the future
+            )
         // ... other services
     })
         .bind((host, port))?
